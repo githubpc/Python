@@ -1,0 +1,130 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Aug 13 19:06:12 2017
+
+@author: phancuong
+"""
+import tkinter as tk
+
+def add(a,b):
+    c = a + b
+    return c
+def sub(a, b):
+    c = a - b
+    return c
+def mul(a, b):
+    c = float(a*b)
+    return c
+def div(a, b):
+    c = float(a/b)
+    return c
+optr = {'+':add, '-':sub, '*':mul, '/':div}
+def frame(root, side):
+    w = tk.Frame(root)
+    w.pack(side = side, expand="YES",fill= "both")
+    return w
+def button(root,side, text, command =None):
+    w = tk.Button(root, text=text, command=command)
+    w.pack(side=side,expand="YES",fill= "both")
+    return w  
+class Application(tk.Frame):
+    
+    def __init__(self , master = None):
+        super().__init__(master)
+        self.config(width=200, height=200)
+        self.pack_propagate(0)
+        self.pack(expand="YES", fill="both")    
+        master.title("Calculator")
+        self.Infor = [['',0],['',1]]
+        self.create_widgets()
+        self.clearResult = 0
+        self.firstPressing = 1
+    def create_widgets(self):
+
+        self.display2 = tk.StringVar()
+        self.display = tk.StringVar()
+        tk.Entry(self, relief=tk.SOLID, textvariable=self.display2
+                 ).pack(side="top", expand="YES",fill="both")
+        tk.Entry(self, relief=tk.SOLID, textvariable=self.display
+                 ).pack(side="top", expand="YES",fill="both")
+        for key in ("123","456","789","-0."):
+            keyF = frame(self, "top")
+            for char in key:
+                button(keyF,"left",char, lambda char=char: self.PressNumberButton(char))
+        keyC = frame(self, 'top')
+        for cal in ('+-*/='):
+            button(keyC, 'left', cal, lambda cal=cal: self.PressOperatorButton(cal, self.firstPressing))
+        clearF = frame(self, 'top')
+        button(clearF, 'left', 'Clear', self.PressButtonClearAll)
+        button(clearF, 'left', 'Clear Entry', self.clearEntry)
+    def PressNumberButton(self, char):
+        if self.clearResult == 1:
+            self.display.set('')
+            self.clearResult = 0
+        else:
+            pass
+        self.display.set(self.display.get() + char)
+
+    def PressOperatorButton(self, cal, firstPress):
+        if cal == '=':
+            if self.clearResult == 0:
+                if ((self.display.get() != '') and (float(self.display.get()) != 0)):
+                    if firstPress == 1: 
+                        result = self.display.get()
+                    else:
+                        self.Infor[1]= [cal, self.display.get()]
+                        result = self.Calculate()
+                    self.display.set(result)
+                    self.clearResult = 1
+                    self.firstPressing = 1
+                    self.display2.set(result)
+                else:
+                    pass                 
+        else:
+            if self.clearResult == 0:
+                if ((self.display.get() != '') and 
+                    (float(self.display.get()) != 0)):
+                    if firstPress == 1:
+                        self.display2.set(self.display.get() + cal)
+                        self.firstPressing = 2
+                        self.Infor[0]= [cal, self.display.get()]
+                        self.clearResult = 1                                               
+                    else:
+                        self.display2.set(self.display2.get() + 
+                                          self.display.get() + cal)
+                        self.Infor[1]= [cal, self.display.get()]
+                        result = self.Calculate()
+                        self.Infor[0] = [self.Infor[1][0], result]
+                        self.Infor[1] = ['',0]
+                        self.display.set(result)
+                        self.clearResult = 1                        
+                else:
+                    pass
+            else:
+                if ((self.display.get() != '') and (float(self.display.get()) != 0)):
+                    if firstPress == 1:
+                        self.display2.set(self.display.get() + cal)
+                        self.firstPressing = 2
+                        self.Infor[0]= [cal, self.display.get()]
+                        self.clearResult = 1
+    def Calculate(self):
+        result = optr[(self.Infor[0][0])](float(self.Infor[0][1]),
+                     float(self.Infor[1][1]))
+        return result 
+        pass
+    def ClearAll(self):
+        self.Infor = [['',0],['',0]]
+    def clearEntry(self):
+        self.display.set('')
+        self.display2.set('')
+    def PressButtonClearAll(self):
+        self.ClearAll()
+        self.display.set('')
+        self.display2.set('')
+        self.firstPressing = 1
+
+        
+root = tk.Tk()
+root.title("cal")
+app = Application(root)
+root.mainloop()
