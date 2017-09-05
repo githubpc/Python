@@ -35,14 +35,14 @@ class Application(tk.Frame):
         self.pack_propagate(0)
         self.pack(expand="YES", fill="both")    
         master.title("Calculator")
-        self.Infor = [['',0],['',0]]
+        self.Number = [['',0],['',0]]
         self.create_widgets()
-#        self.clearResult = 0
-#        self.firstPressing = 1
         self.temp = 0
     def create_widgets(self):
-
+        # Entry to display all buuton is pressed, 
+        # only delete when  pressing '=' button
         self.display2 = tk.StringVar()
+        # Entry to display first and second number and result
         self.display = tk.StringVar()
         tk.Entry(self, relief=tk.SOLID, textvariable=self.display2
                  ).pack(side="top", expand="YES",fill="both")
@@ -54,93 +54,87 @@ class Application(tk.Frame):
                 button(keyF,"left",char, lambda char=char: self.PressNumberButton(char))
         keyC = frame(self, 'top')
         for cal in ('+-*/='):
-#            button(keyC, 'left', cal, lambda cal=cal: self.PressOperatorButton(cal, self.firstPressing))
             button(keyC, 'left', cal, lambda cal=cal: self.PressOperatorButton(cal))
         clearF = frame(self, 'top')
         button(clearF, 'left', 'Clear', self.PressButtonClearAll)
-        button(clearF, 'left', 'Clear Entry', self.clearEntry)
+        button(clearF, 'left', 'Clear Entry', self.PressButtonClearEntry)
         button(clearF, 'left', '←', self.PressButtonArrow)
     def PressNumberButton(self, char):
-#        if self.clearResult == 1:
-        if self.Infor[0][1] != 0 and self.Infor[1][1] == 0:
+        #Check if first numbet is entered
+        if self.Number[0][1] != 0:
+            # If first number is entered, delete the entry 
             self.display.set('')
-#            self.clearResult = 0
-            self.temp = self.Infor[0][1]
-            self.Infor[0][1] = 0
+            # Save the first number is entered to temp variable
+            # and set the first number is zero to enter the second number
+            self.temp = self.Number[0][1]
+            self.Number[0][1] = 0
         else:
             pass
+        # Enter the first and second number, if first and second number are zero
+        # The second number is entered when save the first number then set first 
+        # number is zero
+        
+        # Enter the numbers 
+        
         self.display.set(self.display.get() + char)
 
-#    def PressOperatorButton(self, cal, firstPress):
     def PressOperatorButton(self, cal):
-        #add
-        self.Infor[0][1] = self.temp
-        #emd
+        # Assign tempory variable to the first number 
+        self.Number[0][1] = self.temp
+        # Check if press the '=' button, calculate and display result
         if cal == '=':
-#            if self.clearResult == 0:
-            if self.Infor[0][1] != 0 and self.Infor[1][1] == 0:
-                if ((self.display.get() != '') and (float(self.display.get()) != 0)):
-#                    if firstPress == 1: 
-                    if self.Infor[0][1] == 0 and self.Infor[1][1] == 0:
+            # Check if first number is not zero, 
+            if self.Number[0][1] != 0:
+                if ((self.display.get() != '') and (float(self.display.get()) != 0)): 
+                    if self.Number[0][1] == 0 and self.Number[1][1] == 0:
                         result = self.display.get()
                     else:
-                        self.Infor[1] = [cal, self.display.get()]
+                        self.Number[1] = [cal, self.display.get()]
                         result = self.Calculate()
                         self.ClearAll()
                     self.display.set(result)
-#                    self.clearResult = 1
-#                    self.firstPressing = 1
                     self.display2.set(result)
-                    #add
-                    self.temp = 0
-                    #end
-                else:
-                    pass                 
+                    self.temp = 0                
         else:
-#            if self.clearResult == 0:
-            if self.Infor[0][1] != 0 and self.Infor[1][1] == 0:
-                if ((self.display.get() != '') and 
+        # press thoes operator button such as +-*/, save number is entered, operator
+        # and calculate
+            # Check if entered value is not empty or zero, saving and calculation
+            if ((self.display.get() != '') and 
                     (float(self.display.get()) != 0)):
-#                    if firstPress == 1:
-                    if self.Infor[0][1] == 0 and self.Infor[1][1] == 0:
-                        self.display2.set(self.display.get() + cal)
-#                        self.firstPressing = 2
-                        self.Infor[0]= [cal, self.display.get()] 
-#                        self.clearResult = 1                                               
-                    else:
-                        self.display2.set(self.display2.get() + 
-                                          self.display.get() + cal)
-                        self.Infor[1]= [cal, self.display.get()]
-                        result = self.Calculate()
-                        self.Infor[0] = [self.Infor[1][0], result]
-                        self.Infor[1] = ['',0]
-                        self.display.set(result)
-#                        self.clearResult = 1                        
+                # Check if the first number is not zero, save entered value
+                # and pressed operator for the next calculation
+                # Calculation and display the result
+                # Save result to first number, 0 to second number
+                if self.Number[0][1] != 0:                    
+                    self.display2.set(self.display2.get() + 
+                                      self.display.get() + cal)
+                    self.Number[1]= [cal, self.display.get()]
+                    result = self.Calculate()
+                    self.display.set(result)
+                    self.Number[0] = [self.Number[1][0], result]
+                    self.Number[1] = ['',0]
                 else:
-                    pass
-            else:
-                if ((self.display.get() != '') and (float(self.display.get()) != 0)):
-#                    if firstPress == 1:
-                    if self.Infor[0][1] == 0 and self.Infor[1][1] == 0:
-                        self.display2.set(self.display.get() + cal)
-                        self.firstPressing = 2
-                        self.Infor[0]= [cal, self.display.get()]
-                        self.clearResult = 1
+                    # Save entered value to first number 
+                    # and entered operator for the next calculation
+                    self.display2.set(self.display.get() + cal)
+                    self.Number[0]= [cal, self.display.get()]
+
     def Calculate(self):
-        result = optr[(self.Infor[0][0])](float(self.Infor[0][1]),
-                     float(self.Infor[1][1]))
+        result = optr[(self.Number[0][0])](float(self.Number[0][1]),
+                     float(self.Number[1][1]))
         return result 
-        pass
+    
     def ClearAll(self):
-        self.Infor = [['',0],['',0]]
-    def clearEntry(self):
+        self.Number = [['',0],['',0]]
+        
+    def PressButtonClearEntry(self):
         self.display.set('')
-#        self.display2.set('')
+
     def PressButtonClearAll(self):
         self.ClearAll()
         self.display.set('')
         self.display2.set('')
-        self.firstPressing = 1
+        
     def PressButtonArrow(self):
         entry = self.display.get()        
         entry = entry[:(len(entry)-1)]
