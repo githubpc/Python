@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sun Aug 13 19:06:12 2017
+Created on Tue Sep  5 09:01:36 2017
 
-@author: phancuong
+@author: PCN1HC
 """
 import tkinter as tk
 
@@ -35,10 +35,11 @@ class Application(tk.Frame):
         self.pack_propagate(0)
         self.pack(expand="YES", fill="both")    
         master.title("Calculator")
-        self.Infor = [['',0],['',1]]
+        self.Infor = [['',0],['',0]]
         self.create_widgets()
-        self.clearResult = 0
-        self.firstPressing = 1
+#        self.clearResult = 0
+#        self.firstPressing = 1
+        self.temp = 0
     def create_widgets(self):
 
         self.display2 = tk.StringVar()
@@ -53,42 +54,59 @@ class Application(tk.Frame):
                 button(keyF,"left",char, lambda char=char: self.PressNumberButton(char))
         keyC = frame(self, 'top')
         for cal in ('+-*/='):
-            button(keyC, 'left', cal, lambda cal=cal: self.PressOperatorButton(cal, self.firstPressing))
+#            button(keyC, 'left', cal, lambda cal=cal: self.PressOperatorButton(cal, self.firstPressing))
+            button(keyC, 'left', cal, lambda cal=cal: self.PressOperatorButton(cal))
         clearF = frame(self, 'top')
         button(clearF, 'left', 'Clear', self.PressButtonClearAll)
         button(clearF, 'left', 'Clear Entry', self.clearEntry)
+        button(clearF, 'left', '←', self.PressButtonArrow)
     def PressNumberButton(self, char):
-        if self.clearResult == 1:
+#        if self.clearResult == 1:
+        if self.Infor[0][1] != 0 and self.Infor[1][1] == 0:
             self.display.set('')
-            self.clearResult = 0
+#            self.clearResult = 0
+            self.temp = self.Infor[0][1]
+            self.Infor[0][1] = 0
         else:
             pass
         self.display.set(self.display.get() + char)
 
-    def PressOperatorButton(self, cal, firstPress):
+#    def PressOperatorButton(self, cal, firstPress):
+    def PressOperatorButton(self, cal):
+        #add
+        self.Infor[0][1] = self.temp
+        #emd
         if cal == '=':
-            if self.clearResult == 0:
+#            if self.clearResult == 0:
+            if self.Infor[0][1] != 0 and self.Infor[1][1] == 0:
                 if ((self.display.get() != '') and (float(self.display.get()) != 0)):
-                    if firstPress == 1: 
+#                    if firstPress == 1: 
+                    if self.Infor[0][1] == 0 and self.Infor[1][1] == 0:
                         result = self.display.get()
                     else:
-                        self.Infor[1]= [cal, self.display.get()]
+                        self.Infor[1] = [cal, self.display.get()]
                         result = self.Calculate()
+                        self.ClearAll()
                     self.display.set(result)
-                    self.clearResult = 1
-                    self.firstPressing = 1
+#                    self.clearResult = 1
+#                    self.firstPressing = 1
                     self.display2.set(result)
+                    #add
+                    self.temp = 0
+                    #end
                 else:
                     pass                 
         else:
-            if self.clearResult == 0:
+#            if self.clearResult == 0:
+            if self.Infor[0][1] != 0 and self.Infor[1][1] == 0:
                 if ((self.display.get() != '') and 
                     (float(self.display.get()) != 0)):
-                    if firstPress == 1:
+#                    if firstPress == 1:
+                    if self.Infor[0][1] == 0 and self.Infor[1][1] == 0:
                         self.display2.set(self.display.get() + cal)
-                        self.firstPressing = 2
-                        self.Infor[0]= [cal, self.display.get()]
-                        self.clearResult = 1                                               
+#                        self.firstPressing = 2
+                        self.Infor[0]= [cal, self.display.get()] 
+#                        self.clearResult = 1                                               
                     else:
                         self.display2.set(self.display2.get() + 
                                           self.display.get() + cal)
@@ -97,12 +115,13 @@ class Application(tk.Frame):
                         self.Infor[0] = [self.Infor[1][0], result]
                         self.Infor[1] = ['',0]
                         self.display.set(result)
-                        self.clearResult = 1                        
+#                        self.clearResult = 1                        
                 else:
                     pass
             else:
                 if ((self.display.get() != '') and (float(self.display.get()) != 0)):
-                    if firstPress == 1:
+#                    if firstPress == 1:
+                    if self.Infor[0][1] == 0 and self.Infor[1][1] == 0:
                         self.display2.set(self.display.get() + cal)
                         self.firstPressing = 2
                         self.Infor[0]= [cal, self.display.get()]
@@ -116,12 +135,16 @@ class Application(tk.Frame):
         self.Infor = [['',0],['',0]]
     def clearEntry(self):
         self.display.set('')
-        self.display2.set('')
+#        self.display2.set('')
     def PressButtonClearAll(self):
         self.ClearAll()
         self.display.set('')
         self.display2.set('')
         self.firstPressing = 1
+    def PressButtonArrow(self):
+        entry = self.display.get()        
+        entry = entry[:(len(entry)-1)]
+        self.display.set(entry)
 
         
 root = tk.Tk()
