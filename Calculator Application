@@ -87,7 +87,7 @@ class Application(tk.Frame):
                 # Check if press the '=' button, calculate and display result
                 if self.Number[0][1] != 0:
                     # Check first number is not zero, calculate and display result
-                    self.Number[1] = [cal, self.display.get()]
+                    self.Number[1][1] = self.display.get()
                     result = self.Calculate()
                     self.ClearNumber()
                     
