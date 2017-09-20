@@ -1,0 +1,45 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Sep 20 16:44:38 2017
+
+@author: PCN1HC
+"""
+
+import pandas
+class WorkOnCsvFile(object):
+    
+    def __init__(self):
+
+        self.FData = [4,3,2,1]
+        self.SData = []
+        self.EditedDF = pandas.DataFrame()
+    def SaveData(self):       
+        data = pandas.read_csv('empty.csv')
+        self.SData = data['a'].values
+
+    def Compare(self): 
+        self.SaveData()
+        self.save_index = []
+        for first in self.FData:
+            i = 0
+            for second in self.SData:
+                if (first == second):
+#                    del self.SData[i]
+                    self.save_index.append(i)
+#                    self.DeleteAddedTask(i)
+                else :
+                    pass
+                i += 1
+        self.DeleteAddedTask()
+        self.EditedDF.to_csv('a.csv')
+#        print(self.SData)
+        
+    def DeleteAddedTask(self):
+        index = ([ i for i in range (0,len(self.SData ))])
+        OrgianlDF = pandas.DataFrame(self.SData , index)
+        for i in self.save_index:
+            self.EditedDF = OrgianlDF.drop(OrgianlDF.index[i])
+        print (self.EditedDF)
+WorkOnCsvFile().Compare()
+print()
+print ('done')
