@@ -4,32 +4,19 @@ Created on Wed Sep 20 16:44:38 2017
 
 @author: PCN1HC
 """
-import chardet
+
 import pandas as pd
 
-    
 class WorkOnCsvFile(object):
     
     def __init__(self):
-#        with open ("Current.csv", "r") as myfile:
-#            Fdata=myfile.read()   # or readline if the file is large
-        self.csv_file_data = 'Current.csv'
-        self.csv_file_iteration = 'CurrentIteration.csv'
-        Fdata = pd.read_csv(self.csv_file_iteration)
-#        print(Fdata)
-        print(Fdata.columns)
-        Fdata.to_csv('c.csv')
-#        self.FData = Fdata['"Id"'].values
-#        print(self.FData)
+        self.FData = pd.read_csv('data.csv')['a'].values
         self.SData = []
-#        self.EditedDF = pd.DataFrame()
+        self.EditedDF = pd.DataFrame()
         
-    def SaveData(self):
-        with open('CurrentIteration.csv', 'rb') as f:
-            result = chardet.detect(f.read())  # or readline if the file is large
-        self.Data = pd.read_csv(self.csv_file_iteration, encoding=result['encoding'])
-        
-        self.SData = self.Data['Id'].values
+    def SaveData(self):       
+        self.Data = pd.read_csv('empty.csv')
+        self.SData = self.Data['a'].values
 #        print(self.Data.columns.values)
         
     def Compare(self): 
@@ -42,11 +29,13 @@ class WorkOnCsvFile(object):
                     self.save_index.append(i)
                 i += 1
         self.DeleteAddedTask()
-        self.EditedDF.to_csv('a.csv', index=False, header=self.Data.columns.values)
-        data = pd.read_csv(self.csv_file_data)
-        data = data.append(pd.read_csv(self.csv_file_iteration))
-        data.to_csv('b.csv', index=False)
-        data = pd.read_csv('b.csv')
+#        self.EditedDF.to_csv('a.csv', index=False, header=self.Data.columns.values)
+        data = pd.read_csv('data.csv')
+#        data = data.append(pd.read_csv('a.csv'))
+        data = data.append(self.EditedDF)
+        data.to_csv('data.csv', index=False)
+#        data.to_csv('b.csv', index=False)
+#        data = pd.read_csv('b.csv')
         print(data)
         
     def DeleteAddedTask(self):
@@ -55,8 +44,5 @@ class WorkOnCsvFile(object):
         self.EditedDF = OrgianlDF.drop(self.save_index)
 #        print (self.EditedDF)
         
-WorkOnCsvFile()
-data = pd.read_csv('empty.csv')
-a = data['Id'].values
-print(data)
+WorkOnCsvFile().Compare()
 print ('done')
