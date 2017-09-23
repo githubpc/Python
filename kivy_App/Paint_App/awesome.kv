@@ -1,0 +1,78 @@
+#: import FadeTransition kivy.uix.screenmanager.FadeTransition
+ScreenManagement:
+	transition: FadeTransition()
+	MainScreen:
+	AnotherScreen:
+
+
+<MainScreen>:
+	name:"main"
+	FloatLayout:
+		Widgets
+			id: widgets
+		Button:
+			color:0,1,0,1
+			font_size: 15
+			size_hint: None, None
+			width: 100
+			height: 40
+			text: "Clear"
+			pos_hint: {"right":1, "top":1}
+			on_release: widgets.canvas.clear()
+	# GridLayout:
+		# Button:
+			# id: btn
+			# text: '-'
+			# on_release: dropdown.open(self)
+			# size_hint_y: None
+			# height: '48dp'
+			# pos_hint: {"right":1, "top":1}
+
+		# Widget:
+			# on_parent: dropdown.dismiss()
+
+		# DropDown:
+			
+			# id: dropdown
+			# on_select: btn.text = 'Selected value: {}'.format(args[1])
+			# Button:
+				# text: 'Value A'
+				# size_hint_y: None
+				# height: '48dp'
+				# on_release: dropdown.select('A')
+
+			# Button:
+				# text: 'Value B'
+				# size_hint_y: None
+				# height: '48dp'
+				# on_release: dropdown.select('B')
+
+			# Button:
+				# text: 'Value C'
+				# size_hint_y: None
+				# height: '48dp'
+				# on_release: dropdown.select('C')
+<AnotherScreen>:
+	name: "other"
+	FloatLayout:
+	Widgets
+		id: widgets
+	Button:
+		color:0,1,0,1
+		font_size: 15
+		size_hint: None, None
+		width: 100
+		height: 40
+		text: "Back Home"
+		on_release: app.root.current = "main"
+		pos_hint: {"right":1, "top":1}
+
+	Button:
+		color:0,1,0,1
+		font_size: 15
+		size_hint: None, None
+		width: 100
+		height: 40
+		text: "Clear"
+		pos_hint: {"left":1, "top":1}
+		on_release: widgets.canvas.clear()
